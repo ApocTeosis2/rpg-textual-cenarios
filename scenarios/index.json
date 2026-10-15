@@ -1,0 +1,44 @@
+{
+  
+  "schema_version": 1,
+  
+  "scenarios": [
+    
+    {
+      
+      "id": "ponte_velha",
+      
+      "title": "A Ponte Velha: Segredos na Neblina",
+      
+      "file": "scenarios/ponte_velha/scenario.json"
+      
+    },
+    
+    {
+      
+      "id": "luzes_do_salgueiral",
+      
+      "title": "As Luzes da Ponte do Salgueiro",
+      
+      "file": "scenarios/luzes_do_salgueiral/scenario.json"
+      
+    }
+    
+  ]
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
