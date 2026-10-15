@@ -2,21 +2,26 @@
   "schema_version": 2,
   "scenario_id": "luzes_do_salgueiral",
   "title": "As Luzes da Ponte do Salgueiro",
-  "summary": "A mesma investigação, com novos nomes e cenário: uma estalagem, um viajante perdido e uma ponte iluminada.",
+  "summary": "Uma investigação de marés, astronomia e sinais de sino em uma vila costeira.",
   "start_location": "Estalagem da Raposa",
-  "start_text": "Você chega à estalagem numa manhã tranquila.",
+  "start_text": "A maré está baixa quando você chega à estalagem; Iara observa o céu nublado.",
   "initial_state": {
-    "minute": 600,
-    "energy": 4,
-    "coins": 5,
+    "minute": 450,
+    "energy": 3,
+    "coins": 8,
     "rumor": false,
-    "searched": false,
-    "square_searched": false,
-    "bridge_done": false,
-    "forest_clue": false,
-    "forest_searched": false,
-    "chapel_clue": false,
-    "chapel_searched": false
+    "letter_found": false,
+    "traveler_trace": false,
+    "lens_aligned": false,
+    "tide_chart": false,
+    "bell_fragment": false,
+    "bell_rung": false,
+    "lamp_oil": false,
+    "bridge_inspected": false,
+    "current_read": false,
+    "gate_open": false,
+    "signal_strength": 0,
+    "mystery_solved": false
   },
   "stats": [
     {
@@ -28,21 +33,25 @@
       "field": "energy",
       "label": "Energia",
       "format": "fraction",
-      "max": 5
+      "max": 4
     },
     {
       "field": "coins",
       "label": "Moedas"
+    },
+    {
+      "field": "signal_strength",
+      "label": "Sinal"
     }
   ],
   "locations": {
     "Estalagem da Raposa": {
       "name": "Estalagem da Raposa",
-      "description": "Uma estalagem antiga e acolhedora. A Iara parece preocupada com as luzes que surgem perto da ponte.",
+      "description": "Uma hospedaria perto do cais. Iara guarda cartas de um cartógrafo desaparecido.",
       "actions": [
         {
-          "id": "talk",
-          "label": "Conversar com a Iara",
+          "id": "talk_iara",
+          "label": "Conversar com Iara sobre as luzes",
           "time_cost": 10,
           "effects": [
             {
@@ -62,80 +71,44 @@
                 },
                 {
                   "op": "log",
-                  "text": "A Iara conta: luzes azuladas aparecem sobre a ponte depois da meia-noite. Alguns moradores acreditam que sejam fantasmas."
+                  "text": "Iara conta que três luzes aparecem na ponte antes de cada maré alta."
                 }
               ],
               "else": [
                 {
                   "op": "log",
-                  "text": "A Iara já contou tudo o que sabia."
+                  "text": "Iara não se lembra de outro detalhe."
                 }
               ]
             }
           ]
         },
         {
-          "id": "investigate",
-          "label": "Investigar o salão",
-          "time_cost": 20,
+          "id": "read_letter",
+          "label": "Ler a carta do cartógrafo",
+          "time_cost": 10,
           "effects": [
             {
-              "op": "if",
-              "when": [
-                {
-                  "field": "searched",
-                  "op": "eq",
-                  "value": false
-                }
-              ],
-              "then": [
-                {
-                  "op": "set",
-                  "field": "searched",
-                  "value": true
-                },
-                {
-                  "op": "roll",
-                  "sides": 6,
-                  "branches": [
-                    {
-                      "min": 4,
-                      "effects": [
-                        {
-                          "op": "add",
-                          "field": "coins",
-                          "value": 3
-                        },
-                        {
-                          "op": "log",
-                          "text": "Você encontra três moedas esquecidas sob uma mesa."
-                        }
-                      ]
-                    },
-                    {
-                      "max": 3,
-                      "effects": [
-                        {
-                          "op": "log",
-                          "text": "Você procura no salão, mas não encontra nada."
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ],
-              "else": [
-                {
-                  "op": "log",
-                  "text": "Você já examinou o salão."
-                }
-              ]
+              "op": "set",
+              "field": "letter_found",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "A carta menciona um observatório, uma lente e um caminho que só surge na maré baixa."
+            }
+          ],
+          "when": [
+            {
+              "field": "letter_found",
+              "op": "eq",
+              "value": false
             }
           ]
         },
         {
-          "id": "rest",
-          "label": "Descansar (1 hora)",
+          "id": "rest_in_inn",
+          "label": "Descansar antes da maré",
           "time_cost": 60,
           "effects": [
             {
@@ -143,37 +116,37 @@
               "field": "energy",
               "value": 1,
               "min": 0,
-              "max": 5
+              "max": 4
             },
             {
               "op": "log",
-              "text": "Você descansa e recupera um ponto de energia."
+              "text": "Você recupera energia enquanto a maré começa a baixar."
             }
           ]
         },
         {
-          "id": "leave",
-          "label": "Sair para o Largo de Pedra Clara",
+          "id": "leave_inn",
+          "label": "Ir ao Largo das Lanternas",
           "time_cost": 5,
           "effects": [
             {
               "op": "move",
-              "location": "Largo de Pedra Clara"
+              "location": "Largo das Lanternas"
             },
             {
               "op": "log",
-              "text": "Você segue para o Largo de Pedra Clara."
+              "text": "Você sai em direção ao largo."
             }
           ]
         }
       ]
     },
-    "Largo de Pedra Clara": {
-      "name": "Largo de Pedra Clara",
-      "description": "O Largo de Pedra Clara está quase vazio. Os moradores evitam falar sobre o viajante Nilo e a ponte.",
+    "Largo das Lanternas": {
+      "name": "Largo das Lanternas",
+      "description": "O largo reúne o mercado, a ponte, o bosque e o caminho íngreme para o observatório.",
       "actions": [
         {
-          "id": "return",
+          "id": "return_inn",
           "label": "Voltar à estalagem",
           "time_cost": 5,
           "effects": [
@@ -188,61 +161,47 @@
           ]
         },
         {
-          "id": "investigate",
-          "label": "Investigar o Largo de Pedra Clara",
-          "time_cost": 20,
+          "id": "investigate_nilo",
+          "label": "Perguntar pelo cartógrafo Nilo",
+          "time_cost": 15,
           "effects": [
             {
-              "op": "if",
-              "when": [
-                {
-                  "field": "square_searched",
-                  "op": "eq",
-                  "value": false
-                }
-              ],
-              "then": [
-                {
-                  "op": "set",
-                  "field": "square_searched",
-                  "value": true
-                },
-                {
-                  "op": "log",
-                  "text": "Nilo, um viajante, desapareceu após atravessar a ponte numa noite de neblina. Ninguém sabe para onde ele foi."
-                }
-              ],
-              "else": [
-                {
-                  "op": "log",
-                  "text": "Os moradores não têm novas informações."
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "rest",
-          "label": "Descansar (1 hora)",
-          "time_cost": 60,
-          "effects": [
-            {
-              "op": "add_clamped",
-              "field": "energy",
-              "value": 1,
-              "min": 0,
-              "max": 5
+              "op": "set",
+              "field": "traveler_trace",
+              "value": true
             },
             {
               "op": "log",
-              "text": "Você descansa e recupera um ponto de energia."
+              "text": "Um pescador confirma que Nilo anotava as marés antes de desaparecer."
+            }
+          ],
+          "when": [
+            {
+              "field": "traveler_trace",
+              "op": "eq",
+              "value": false
             }
           ]
         },
         {
-          "id": "bridge",
-          "label": "Seguir para a Ponte do Salgueiro",
-          "time_cost": 30,
+          "id": "go_market",
+          "label": "Ir ao Mercado do Cais",
+          "time_cost": 5,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Mercado do Cais"
+            },
+            {
+              "op": "log",
+              "text": "Você segue até as barracas do cais."
+            }
+          ]
+        },
+        {
+          "id": "go_bridge",
+          "label": "Investigar a Ponte do Salgueiro",
+          "time_cost": 10,
           "effects": [
             {
               "op": "move",
@@ -250,7 +209,7 @@
             },
             {
               "op": "log",
-              "text": "Guiado pelo rumor, você chega à Ponte do Salgueiro. Há marcas recentes nas pedras."
+              "text": "As luzes parecem vir debaixo da ponte."
             }
           ],
           "when": [
@@ -260,16 +219,38 @@
               "value": true
             },
             {
-              "field": "bridge_done",
+              "field": "bridge_inspected",
               "op": "eq",
               "value": false
             }
           ]
         },
         {
-          "id": "forest",
-          "label": "Explorar o Bosque dos Sinos",
-          "time_cost": 20,
+          "id": "go_observatory",
+          "label": "Subir ao Observatório das Marés",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Observatório das Marés"
+            },
+            {
+              "op": "log",
+              "text": "A carta indica um caminho seguro até o observatório."
+            }
+          ],
+          "when": [
+            {
+              "field": "letter_found",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "go_forest",
+          "label": "Entrar no Bosque dos Sinos",
+          "time_cost": 10,
           "effects": [
             {
               "op": "move",
@@ -277,7 +258,7 @@
             },
             {
               "op": "log",
-              "text": "As pegadas no Bosque dos Sinos pertencem aparentemente a alguém que saiu da estrada e seguiu até um carvalho oco."
+              "text": "Um toque distante ecoa por entre as árvores."
             }
           ],
           "when": [
@@ -287,36 +268,86 @@
               "value": true
             },
             {
-              "field": "forest_clue",
+              "field": "bell_fragment",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "Mercado do Cais": {
+      "name": "Mercado do Cais",
+      "description": "Os comerciantes vendem óleo de lanterna e mapas incompletos das cavernas costeiras.",
+      "actions": [
+        {
+          "id": "buy_oil",
+          "label": "Comprar óleo para a lanterna",
+          "time_cost": 5,
+          "effects": [
+            {
+              "op": "add",
+              "field": "coins",
+              "value": -2
+            },
+            {
+              "op": "set",
+              "field": "lamp_oil",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "Você compra óleo suficiente para iluminar uma passagem submersa."
+            }
+          ],
+          "when": [
+            {
+              "field": "coins",
+              "op": "gte",
+              "value": 2
+            },
+            {
+              "field": "lamp_oil",
               "op": "eq",
               "value": false
             }
           ]
         },
         {
-          "id": "chapel",
-          "label": "Ir à Ermida das Sete Pedras",
-          "time_cost": 20,
+          "id": "ask_fisher",
+          "label": "Pedir orientação a uma pescadora",
+          "time_cost": 10,
           "effects": [
             {
-              "op": "move",
-              "location": "Ermida das Sete Pedras"
+              "op": "set",
+              "field": "current_read",
+              "value": true
             },
             {
               "op": "log",
-              "text": "Você entra na Ermida das Sete Pedras. O altar está coberto de inscrições."
+              "text": "A pescadora explica como reconhecer a corrente que entra no cais submerso."
             }
           ],
           "when": [
             {
-              "field": "forest_clue",
-              "op": "eq",
-              "value": true
-            },
-            {
-              "field": "chapel_clue",
+              "field": "current_read",
               "op": "eq",
               "value": false
+            }
+          ]
+        },
+        {
+          "id": "market_to_largo",
+          "label": "Voltar ao largo",
+          "time_cost": 5,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Largo das Lanternas"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna ao largo."
             }
           ]
         }
@@ -324,43 +355,141 @@
     },
     "Ponte do Salgueiro": {
       "name": "Ponte do Salgueiro",
-      "description": "Uma ponte de pedra atravessa o rio escuro. Marcas recentes aparecem entre as pedras cobertas de musgo.",
+      "description": "A ponte tem três encaixes de vidro e marcas de água em alturas diferentes.",
       "actions": [
         {
-          "id": "return_square",
-          "label": "Voltar ao Largo de Pedra Clara",
-          "time_cost": 10,
-          "effects": [
-            {
-              "op": "move",
-              "location": "Largo de Pedra Clara"
-            },
-            {
-              "op": "log",
-              "text": "Você retorna ao Largo de Pedra Clara."
-            }
-          ]
-        },
-        {
           "id": "inspect_bridge",
-          "label": "Examinar a ponte",
+          "label": "Examinar os encaixes de vidro",
           "time_cost": 15,
           "effects": [
             {
               "op": "set",
-              "field": "bridge_done",
+              "field": "bridge_inspected",
               "value": true
             },
             {
               "op": "log",
-              "text": "Sob uma pedra solta, você encontra um medalhão. A luz misteriosa era o reflexo da lua numa lente antiga. Você resolveu o mistério principal!"
+              "text": "Os encaixes apontam para um observatório e para uma passagem junto ao cais."
             }
           ],
           "when": [
             {
-              "field": "bridge_done",
+              "field": "bridge_inspected",
               "op": "eq",
               "value": false
+            }
+          ]
+        },
+        {
+          "id": "enter_docks",
+          "label": "Descer ao Cais Submerso",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Cais Submerso"
+            },
+            {
+              "op": "log",
+              "text": "Uma escada aparece entre as pedras na maré baixa."
+            }
+          ],
+          "when": [
+            {
+              "field": "bridge_inspected",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "bridge_to_largo",
+          "label": "Voltar ao largo",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Largo das Lanternas"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna ao largo."
+            }
+          ]
+        }
+      ]
+    },
+    "Observatório das Marés": {
+      "name": "Observatório das Marés",
+      "description": "Um telescópio quebrado aponta para a torre do sino e para um conjunto de marcas lunares.",
+      "actions": [
+        {
+          "id": "align_lens",
+          "label": "Alinhar a lente com as marcas lunares",
+          "time_cost": 20,
+          "effects": [
+            {
+              "op": "set",
+              "field": "lens_aligned",
+              "value": true
+            },
+            {
+              "op": "add",
+              "field": "signal_strength",
+              "value": 1
+            },
+            {
+              "op": "log",
+              "text": "A lente projeta um feixe prateado em direção à torre."
+            }
+          ],
+          "when": [
+            {
+              "field": "letter_found",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "lens_aligned",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "go_tower",
+          "label": "Seguir o feixe até a Torre do Sino",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Torre do Sino"
+            },
+            {
+              "op": "log",
+              "text": "O feixe aponta para uma porta lateral da torre."
+            }
+          ],
+          "when": [
+            {
+              "field": "lens_aligned",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "observatory_to_largo",
+          "label": "Descer ao largo",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Largo das Lanternas"
+            },
+            {
+              "op": "log",
+              "text": "Você desce de volta ao largo."
             }
           ]
         }
@@ -368,76 +497,65 @@
     },
     "Bosque dos Sinos": {
       "name": "Bosque dos Sinos",
-      "description": "Uma bosque densa cerca a estrada. Pegadas recentes desaparecem perto de um carvalho oco.",
+      "description": "Entre as árvores há sinos sem badalo e pegadas recentes que seguem até a ermida.",
       "actions": [
         {
-          "id": "return_square",
-          "label": "Voltar ao Largo de Pedra Clara",
-          "time_cost": 10,
-          "effects": [
-            {
-              "op": "move",
-              "location": "Largo de Pedra Clara"
-            },
-            {
-              "op": "log",
-              "text": "Você retorna ao Largo de Pedra Clara."
-            }
-          ]
-        },
-        {
-          "id": "search_tracks",
-          "label": "Procurar pegadas",
+          "id": "find_bell_fragment",
+          "label": "Procurar o badalo perdido",
           "time_cost": 20,
           "effects": [
             {
               "op": "set",
-              "field": "forest_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "forest_clue",
+              "field": "bell_fragment",
               "value": true
             },
             {
               "op": "log",
-              "text": "Você segue as pegadas até um carvalho oco. Encontra um pedaço de tecido e um símbolo antigo. A descoberta revela o caminho para a ermida."
+              "text": "Você encontra um fragmento de bronze marcado com o símbolo de Nilo."
             }
           ],
           "when": [
             {
-              "field": "forest_searched",
+              "field": "bell_fragment",
               "op": "eq",
               "value": false
             }
           ]
         },
         {
-          "id": "explore_forest",
-          "label": "Explorar a trilha",
-          "time_cost": 30,
+          "id": "go_hermitage",
+          "label": "Seguir as pegadas até a Ermida",
+          "time_cost": 10,
           "effects": [
             {
-              "op": "set",
-              "field": "forest_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "forest_clue",
-              "value": true
+              "op": "move",
+              "location": "Ermida das Sete Pedras"
             },
             {
               "op": "log",
-              "text": "Entre as raízes, você encontra um medalhão quebrado com o símbolo da Ermida das Sete Pedras. Você descobriu uma nova pista."
+              "text": "As pegadas levam à ermida na encosta."
             }
           ],
           "when": [
             {
-              "field": "forest_searched",
+              "field": "bell_fragment",
               "op": "eq",
-              "value": false
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "forest_to_largo",
+          "label": "Voltar ao largo",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Largo das Lanternas"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna ao largo."
             }
           ]
         }
@@ -445,80 +563,327 @@
     },
     "Ermida das Sete Pedras": {
       "name": "Ermida das Sete Pedras",
-      "description": "Uma ermida esquecida guarda inscrições antigas, um altar rachado e vestígios de um guardião Orlan desaparecido.",
+      "description": "A ermida conserva um calendário de marés gravado em sete pedras.",
       "actions": [
         {
-          "id": "return_square",
-          "label": "Voltar ao Largo de Pedra Clara",
-          "time_cost": 10,
-          "effects": [
-            {
-              "op": "move",
-              "location": "Largo de Pedra Clara"
-            },
-            {
-              "op": "log",
-              "text": "Você retorna ao Largo de Pedra Clara."
-            }
-          ]
-        },
-        {
-          "id": "read_inscriptions",
-          "label": "Ler as inscrições",
-          "time_cost": 15,
-          "effects": [
-            {
-              "op": "set",
-              "field": "chapel_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "chapel_clue",
-              "value": true
-            },
-            {
-              "op": "log",
-              "text": "As inscrições da ermida contam que uma luz misteriosa guiava os viajantes e que o símbolo do guardião Orlan foi perdido."
-            },
-            {
-              "op": "log",
-              "text": "As inscrições revelam que a lente foi instalada para orientar viajantes durante a neblina. Um acidente antigo deu origem à lenda."
-            }
-          ],
-          "when": [
-            {
-              "field": "chapel_searched",
-              "op": "eq",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "investigate_chapel",
-          "label": "Investigar o altar",
+          "id": "decode_tide_chart",
+          "label": "Decifrar o calendário de marés",
           "time_cost": 20,
           "effects": [
             {
               "op": "set",
-              "field": "chapel_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "chapel_clue",
+              "field": "tide_chart",
               "value": true
             },
             {
               "op": "log",
-              "text": "Você encontra um diário escondido sob o altar. Ele relata o desaparecimento do antigo guardião Orlan da ponte e revela a origem do símbolo."
+              "text": "O calendário revela a hora exata em que a câmara submersa pode ser aberta."
             }
           ],
           "when": [
             {
-              "field": "chapel_searched",
+              "field": "letter_found",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "bell_fragment",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "tide_chart",
               "op": "eq",
               "value": false
+            }
+          ]
+        },
+        {
+          "id": "hermitage_to_forest",
+          "label": "Retornar ao bosque",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Bosque dos Sinos"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna pelo caminho das árvores."
+            }
+          ]
+        },
+        {
+          "id": "copy_hermitage_mark",
+          "label": "Copiar o símbolo da ermida",
+          "time_cost": 5,
+          "effects": [
+            {
+              "op": "add",
+              "field": "signal_strength",
+              "value": 1
+            },
+            {
+              "op": "log",
+              "text": "O símbolo completa parte do desenho encontrado na carta."
+            }
+          ]
+        }
+      ]
+    },
+    "Cais Submerso": {
+      "name": "Cais Submerso",
+      "description": "A água recua por poucos minutos. Um canal estreito leva a uma câmara abaixo da ponte.",
+      "actions": [
+        {
+          "id": "measure_current",
+          "label": "Medir a correnteza",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "roll",
+              "sides": 8,
+              "branches": [
+                {
+                  "min": 5,
+                  "effects": [
+                    {
+                      "op": "set",
+                      "field": "current_read",
+                      "value": true
+                    },
+                    {
+                      "op": "log",
+                      "text": "Você identifica a corrente segura para atravessar o canal."
+                    }
+                  ]
+                },
+                {
+                  "max": 4,
+                  "effects": [
+                    {
+                      "op": "log",
+                      "text": "A água sobe e esconde o canal. Será preciso tentar outra vez na próxima baixa."
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "when": [
+            {
+              "field": "current_read",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "open_chamber",
+          "label": "Abrir a passagem para a Câmara das Marés",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "set",
+              "field": "gate_open",
+              "value": true
+            },
+            {
+              "op": "move",
+              "location": "Câmara das Marés"
+            },
+            {
+              "op": "log",
+              "text": "Com o horário correto e a corrente identificada, a passagem se abre."
+            }
+          ],
+          "when": [
+            {
+              "field": "current_read",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "tide_chart",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "lens_aligned",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "docks_to_bridge",
+          "label": "Subir à ponte",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Ponte do Salgueiro"
+            },
+            {
+              "op": "log",
+              "text": "Você sobe de volta à ponte."
+            }
+          ]
+        }
+      ]
+    },
+    "Torre do Sino": {
+      "name": "Torre do Sino",
+      "description": "A torre tem um sino rachado e uma abertura voltada para a câmara sob o cais.",
+      "actions": [
+        {
+          "id": "ring_bell",
+          "label": "Instalar o badalo e tocar o sino",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "set",
+              "field": "bell_rung",
+              "value": true
+            },
+            {
+              "op": "add",
+              "field": "signal_strength",
+              "value": 2
+            },
+            {
+              "op": "log",
+              "text": "O sino ressoa na frequência da lente e faz a água vibrar."
+            }
+          ],
+          "when": [
+            {
+              "field": "bell_fragment",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "lens_aligned",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "tide_chart",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "bell_rung",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "tower_to_observatory",
+          "label": "Voltar ao observatório",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Observatório das Marés"
+            },
+            {
+              "op": "log",
+              "text": "Você segue o feixe de volta ao observatório."
+            }
+          ]
+        },
+        {
+          "id": "look_through_floor",
+          "label": "Observar a abertura no piso",
+          "time_cost": 5,
+          "effects": [
+            {
+              "op": "log",
+              "text": "A abertura revela uma porta circular, mas ela ainda está trancada pela maré."
+            }
+          ]
+        }
+      ]
+    },
+    "Câmara das Marés": {
+      "name": "Câmara das Marés",
+      "description": "A câmara preserva o mapa de Nilo e o mecanismo que produzia as luzes da ponte.",
+      "actions": [
+        {
+          "id": "solve_tide_mystery",
+          "label": "Ativar o mecanismo de sinalização",
+          "time_cost": 20,
+          "effects": [
+            {
+              "op": "set",
+              "field": "mystery_solved",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "O sino, a lente e o mapa trabalham juntos: as luzes eram um farol automático para barcos."
+            }
+          ],
+          "when": [
+            {
+              "field": "bell_rung",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "lamp_oil",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "traveler_trace",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "gate_open",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "study_map",
+          "label": "Estudar o mapa de Nilo",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "set",
+              "field": "traveler_trace",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "O mapa mostra que Nilo escapou pelo canal e deixou instruções para o próximo viajante."
+            }
+          ],
+          "when": [
+            {
+              "field": "traveler_trace",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "chamber_to_docks",
+          "label": "Voltar ao cais submerso",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Cais Submerso"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna ao cais antes que a maré suba."
             }
           ]
         }
