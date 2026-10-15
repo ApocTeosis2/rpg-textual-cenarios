@@ -2,21 +2,25 @@
   "schema_version": 2,
   "scenario_id": "ponte_velha",
   "title": "A Ponte Velha: Segredos na Neblina",
-  "summary": "Uma aventura de investigação sobre luzes, uma ponte antiga e um viajante desaparecido.",
+  "summary": "Uma investigação em ramos sobre a ponte, o moinho e a origem das luzes.",
   "start_location": "Hospedaria do Corvo",
-  "start_text": "Você chega à hospedaria numa manhã tranquila.",
+  "start_text": "Você chega à hospedaria quando a neblina começa a se erguer do rio.",
   "initial_state": {
-    "minute": 600,
-    "energy": 4,
-    "coins": 5,
+    "minute": 540,
+    "vigor": 4,
+    "coins": 6,
     "rumor": false,
-    "searched": false,
-    "square_searched": false,
-    "bridge_done": false,
-    "forest_clue": false,
+    "board_read": false,
+    "traveler_known": false,
+    "bridge_examined": false,
+    "mill_key": false,
+    "mill_clue": false,
+    "lens_recovered": false,
     "forest_searched": false,
+    "forest_clue": false,
     "chapel_clue": false,
-    "chapel_searched": false
+    "river_mark": false,
+    "mystery_solved": false
   },
   "stats": [
     {
@@ -25,10 +29,10 @@
       "format": "clock"
     },
     {
-      "field": "energy",
-      "label": "Energia",
+      "field": "vigor",
+      "label": "Vigor",
       "format": "fraction",
-      "max": 5
+      "max": 6
     },
     {
       "field": "coins",
@@ -38,11 +42,11 @@
   "locations": {
     "Hospedaria do Corvo": {
       "name": "Hospedaria do Corvo",
-      "description": "Uma hospedaria antiga e acolhedora. A atendente parece preocupada com as luzes que surgem perto da ponte.",
+      "description": "A hospedaria fica junto à estrada. A dona evita olhar para a ponte quando o sino toca.",
       "actions": [
         {
-          "id": "talk",
-          "label": "Conversar com a atendente",
+          "id": "talk_keeper",
+          "label": "Perguntar à estalajadeira sobre as luzes",
           "time_cost": 10,
           "effects": [
             {
@@ -62,118 +66,87 @@
                 },
                 {
                   "op": "log",
-                  "text": "A atendente conta: luzes azuladas aparecem sobre a ponte depois da meia-noite. Alguns moradores acreditam que sejam fantasmas."
+                  "text": "Ela fala de uma luz azul sobre a ponte e de um barqueiro que sumiu na neblina."
                 }
               ],
               "else": [
                 {
                   "op": "log",
-                  "text": "A atendente já contou tudo o que sabia."
+                  "text": "A estalajadeira repete que já contou tudo o que sabe."
                 }
               ]
             }
           ]
         },
         {
-          "id": "investigate",
-          "label": "Investigar o salão",
-          "time_cost": 20,
+          "id": "read_notice",
+          "label": "Ler o quadro de avisos",
+          "time_cost": 5,
           "effects": [
             {
-              "op": "if",
-              "when": [
-                {
-                  "field": "searched",
-                  "op": "eq",
-                  "value": false
-                }
-              ],
-              "then": [
-                {
-                  "op": "set",
-                  "field": "searched",
-                  "value": true
-                },
-                {
-                  "op": "roll",
-                  "sides": 6,
-                  "branches": [
-                    {
-                      "min": 4,
-                      "effects": [
-                        {
-                          "op": "add",
-                          "field": "coins",
-                          "value": 3
-                        },
-                        {
-                          "op": "log",
-                          "text": "Você encontra três moedas esquecidas sob uma mesa."
-                        }
-                      ]
-                    },
-                    {
-                      "max": 3,
-                      "effects": [
-                        {
-                          "op": "log",
-                          "text": "Você procura no salão, mas não encontra nada."
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ],
-              "else": [
-                {
-                  "op": "log",
-                  "text": "Você já examinou o salão."
-                }
-              ]
+              "op": "set",
+              "field": "board_read",
+              "value": true
+            },
+            {
+              "op": "set",
+              "field": "mill_key",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "Um aviso antigo menciona a chave do moinho, guardada atrás do balcão."
+            }
+          ],
+          "when": [
+            {
+              "field": "board_read",
+              "op": "eq",
+              "value": false
             }
           ]
         },
         {
-          "id": "rest",
-          "label": "Descansar (1 hora)",
+          "id": "rest_inn",
+          "label": "Descansar na hospedaria",
           "time_cost": 60,
           "effects": [
             {
               "op": "add_clamped",
-              "field": "energy",
+              "field": "vigor",
               "value": 1,
               "min": 0,
-              "max": 5
+              "max": 6
             },
             {
               "op": "log",
-              "text": "Você descansa e recupera um ponto de energia."
+              "text": "Uma hora de descanso devolve um pouco de vigor."
             }
           ]
         },
         {
-          "id": "leave",
-          "label": "Sair para a praça",
+          "id": "leave_inn",
+          "label": "Seguir para a praça",
           "time_cost": 5,
           "effects": [
             {
               "op": "move",
-              "location": "Praça da vila"
+              "location": "Praça da Vila"
             },
             {
               "op": "log",
-              "text": "Você segue para a praça da vila."
+              "text": "Você segue para a praça central."
             }
           ]
         }
       ]
     },
-    "Praça da vila": {
-      "name": "Praça da vila",
-      "description": "A praça está quase vazia. Os moradores evitam falar sobre o viajante desaparecido e a ponte.",
+    "Praça da Vila": {
+      "name": "Praça da Vila",
+      "description": "A praça liga a estrada, a velha ponte, o bosque e o moinho desativado.",
       "actions": [
         {
-          "id": "return",
+          "id": "return_inn",
           "label": "Voltar à hospedaria",
           "time_cost": 5,
           "effects": [
@@ -188,15 +161,322 @@
           ]
         },
         {
-          "id": "investigate",
-          "label": "Investigar a praça",
+          "id": "investigate_square",
+          "label": "Perguntar sobre o barqueiro desaparecido",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "set",
+              "field": "traveler_known",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "Um morador diz que o barqueiro levava cargas entre o moinho e a margem do rio."
+            }
+          ],
+          "when": [
+            {
+              "field": "traveler_known",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "go_bridge",
+          "label": "Ir à Ponte Velha",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Ponte Velha"
+            },
+            {
+              "op": "log",
+              "text": "Você segue até a ponte de pedra."
+            }
+          ],
+          "when": [
+            {
+              "field": "rumor",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "bridge_examined",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "go_forest",
+          "label": "Investigar o Bosque das Lajes",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Bosque das Lajes"
+            },
+            {
+              "op": "log",
+              "text": "Pegadas recentes entram no bosque."
+            }
+          ],
+          "when": [
+            {
+              "field": "rumor",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "forest_clue",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "go_mill",
+          "label": "Abrir o caminho do moinho",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Moinho Desativado"
+            },
+            {
+              "op": "log",
+              "text": "A chave do aviso abre a porta lateral do moinho."
+            }
+          ],
+          "when": [
+            {
+              "field": "mill_key",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "mill_clue",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "go_chapel",
+          "label": "Subir à Capela do Vento",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Capela do Vento"
+            },
+            {
+              "op": "log",
+              "text": "Um caminho estreito sobe até a capela."
+            }
+          ],
+          "when": [
+            {
+              "field": "forest_clue",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "chapel_clue",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "Ponte Velha": {
+      "name": "Ponte Velha",
+      "description": "As pedras da ponte estão úmidas. Há um encaixe vazio no parapeito e marcas que descem até o rio.",
+      "actions": [
+        {
+          "id": "inspect_bridge",
+          "label": "Examinar as marcas no parapeito",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "set",
+              "field": "bridge_examined",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "As marcas indicam que uma peça de vidro foi retirada e levada para perto do moinho."
+            }
+          ],
+          "when": [
+            {
+              "field": "bridge_examined",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "descend_bridge",
+          "label": "Descer pela escada até a margem",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Margem do Rio"
+            },
+            {
+              "op": "log",
+              "text": "Uma escada escondida desce da ponte até a margem."
+            }
+          ],
+          "when": [
+            {
+              "field": "bridge_examined",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "bridge_to_square",
+          "label": "Voltar à praça",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Praça da Vila"
+            },
+            {
+              "op": "log",
+              "text": "Você volta à praça."
+            }
+          ]
+        }
+      ]
+    },
+    "Bosque das Lajes": {
+      "name": "Bosque das Lajes",
+      "description": "Lajes cobertas de musgo formam um caminho entre as árvores; uma trilha sobe para a capela.",
+      "actions": [
+        {
+          "id": "search_tracks",
+          "label": "Seguir as pegadas",
+          "time_cost": 20,
+          "effects": [
+            {
+              "op": "set",
+              "field": "forest_searched",
+              "value": true
+            },
+            {
+              "op": "set",
+              "field": "forest_clue",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "As pegadas terminam junto a um marco com o mesmo símbolo gravado na capela."
+            }
+          ],
+          "when": [
+            {
+              "field": "forest_searched",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "follow_chapel_path",
+          "label": "Subir pela trilha da capela",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Capela do Vento"
+            },
+            {
+              "op": "log",
+              "text": "Você segue as lajes até a capela."
+            }
+          ],
+          "when": [
+            {
+              "field": "forest_clue",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "chapel_clue",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "forest_to_square",
+          "label": "Voltar à praça",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Praça da Vila"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna à praça."
+            }
+          ]
+        }
+      ]
+    },
+    "Capela do Vento": {
+      "name": "Capela do Vento",
+      "description": "A capela guarda inscrições sobre um guardião que orientava barcos durante a neblina.",
+      "actions": [
+        {
+          "id": "read_chapel",
+          "label": "Decifrar as inscrições",
+          "time_cost": 15,
+          "effects": [
+            {
+              "op": "set",
+              "field": "chapel_clue",
+              "value": true
+            },
+            {
+              "op": "log",
+              "text": "As inscrições explicam que a luz da ponte era um sinal refletido por uma lente."
+            }
+          ],
+          "when": [
+            {
+              "field": "forest_clue",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "chapel_clue",
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "search_chapel",
+          "label": "Examinar o altar rachado",
           "time_cost": 20,
           "effects": [
             {
               "op": "if",
               "when": [
                 {
-                  "field": "square_searched",
+                  "field": "chapel_clue",
                   "op": "eq",
                   "value": false
                 }
@@ -204,321 +484,259 @@
               "then": [
                 {
                   "op": "set",
-                  "field": "square_searched",
+                  "field": "chapel_clue",
                   "value": true
                 },
                 {
                   "op": "log",
-                  "text": "Um viajante desapareceu após atravessar a ponte numa noite de neblina. Ninguém sabe para onde ele foi."
+                  "text": "Sob o altar, você encontra a metade de um mapa da margem."
                 }
               ],
               "else": [
                 {
                   "op": "log",
-                  "text": "Os moradores não têm novas informações."
+                  "text": "O altar já foi examinado; nada mais se move entre as pedras."
                 }
               ]
             }
           ]
         },
         {
-          "id": "rest",
-          "label": "Descansar (1 hora)",
-          "time_cost": 60,
-          "effects": [
-            {
-              "op": "add_clamped",
-              "field": "energy",
-              "value": 1,
-              "min": 0,
-              "max": 5
-            },
-            {
-              "op": "log",
-              "text": "Você descansa e recupera um ponto de energia."
-            }
-          ]
-        },
-        {
-          "id": "bridge",
-          "label": "Seguir para a ponte velha",
-          "time_cost": 30,
+          "id": "chapel_to_square",
+          "label": "Descer à praça",
+          "time_cost": 10,
           "effects": [
             {
               "op": "move",
-              "location": "Ponte velha"
+              "location": "Praça da Vila"
             },
             {
               "op": "log",
-              "text": "Guiado pelo rumor, você chega à ponte velha. Há marcas recentes nas pedras."
-            }
-          ],
-          "when": [
-            {
-              "field": "rumor",
-              "op": "eq",
-              "value": true
-            },
-            {
-              "field": "bridge_done",
-              "op": "eq",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "forest",
-          "label": "Explorar a Floresta do Norte",
-          "time_cost": 20,
-          "effects": [
-            {
-              "op": "move",
-              "location": "Floresta do Norte"
-            },
-            {
-              "op": "log",
-              "text": "As pegadas na Floresta do Norte pertencem aparentemente a alguém que saiu da estrada e seguiu até uma árvore oca."
-            }
-          ],
-          "when": [
-            {
-              "field": "rumor",
-              "op": "eq",
-              "value": true
-            },
-            {
-              "field": "forest_clue",
-              "op": "eq",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "chapel",
-          "label": "Ir à capela abandonada",
-          "time_cost": 20,
-          "effects": [
-            {
-              "op": "move",
-              "location": "Capela abandonada"
-            },
-            {
-              "op": "log",
-              "text": "Você entra na capela abandonada. O altar está coberto de inscrições."
-            }
-          ],
-          "when": [
-            {
-              "field": "forest_clue",
-              "op": "eq",
-              "value": true
-            },
-            {
-              "field": "chapel_clue",
-              "op": "eq",
-              "value": false
+              "text": "Você desce de volta à praça."
             }
           ]
         }
       ]
     },
-    "Ponte velha": {
-      "name": "Ponte velha",
-      "description": "Uma ponte de pedra atravessa o rio escuro. Marcas recentes aparecem entre as pedras cobertas de musgo.",
+    "Moinho Desativado": {
+      "name": "Moinho Desativado",
+      "description": "O moinho está parado há anos. Uma roda quebrada esconde uma lente de vidro e um canal subterrâneo.",
       "actions": [
         {
-          "id": "return_square",
-          "label": "Voltar à praça",
-          "time_cost": 10,
+          "id": "inspect_mill",
+          "label": "Examinar a engrenagem",
+          "time_cost": 20,
           "effects": [
             {
-              "op": "move",
-              "location": "Praça da vila"
+              "op": "set",
+              "field": "mill_clue",
+              "value": true
+            },
+            {
+              "op": "set",
+              "field": "lens_recovered",
+              "value": true
             },
             {
               "op": "log",
-              "text": "Você retorna à praça da vila."
+              "text": "Na engrenagem, você encontra a lente retirada da ponte e a marca de uma passagem sob o moinho."
+            }
+          ],
+          "when": [
+            {
+              "field": "mill_clue",
+              "op": "eq",
+              "value": false
             }
           ]
         },
         {
-          "id": "inspect_bridge",
-          "label": "Examinar a ponte",
+          "id": "descend_canal",
+          "label": "Descer pelo canal",
           "time_cost": 15,
           "effects": [
             {
-              "op": "set",
-              "field": "bridge_done",
-              "value": true
+              "op": "move",
+              "location": "Margem do Rio"
             },
             {
               "op": "log",
-              "text": "Sob uma pedra solta, você encontra um medalhão. A luz misteriosa era o reflexo da lua numa lente antiga. Você resolveu o mistério principal!"
+              "text": "O canal termina numa margem escondida do rio."
             }
           ],
           "when": [
             {
-              "field": "bridge_done",
+              "field": "mill_clue",
               "op": "eq",
-              "value": false
+              "value": true
             }
           ]
-        }
-      ]
-    },
-    "Floresta do Norte": {
-      "name": "Floresta do Norte",
-      "description": "Uma floresta densa cerca a estrada. Pegadas recentes desaparecem perto de uma árvore oca.",
-      "actions": [
+        },
         {
-          "id": "return_square",
+          "id": "search_mill",
+          "label": "Procurar no depósito",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "add",
+              "field": "coins",
+              "value": 2
+            },
+            {
+              "op": "log",
+              "text": "Você encontra duas moedas esquecidas numa caixa de ferramentas."
+            }
+          ],
+          "when": [
+            {
+              "field": "board_read",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "mill_to_square",
           "label": "Voltar à praça",
           "time_cost": 10,
           "effects": [
             {
               "op": "move",
-              "location": "Praça da vila"
+              "location": "Praça da Vila"
             },
             {
               "op": "log",
-              "text": "Você retorna à praça da vila."
-            }
-          ]
-        },
-        {
-          "id": "search_tracks",
-          "label": "Procurar pegadas",
-          "time_cost": 20,
-          "effects": [
-            {
-              "op": "set",
-              "field": "forest_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "forest_clue",
-              "value": true
-            },
-            {
-              "op": "log",
-              "text": "Você segue as pegadas até uma árvore oca. Encontra um pedaço de tecido e um símbolo antigo. A descoberta revela o caminho para a capela."
-            }
-          ],
-          "when": [
-            {
-              "field": "forest_searched",
-              "op": "eq",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "explore_forest",
-          "label": "Explorar a trilha",
-          "time_cost": 30,
-          "effects": [
-            {
-              "op": "set",
-              "field": "forest_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "forest_clue",
-              "value": true
-            },
-            {
-              "op": "log",
-              "text": "Entre as raízes, você encontra um medalhão quebrado com o símbolo da capela abandonada. Você descobriu uma nova pista."
-            }
-          ],
-          "when": [
-            {
-              "field": "forest_searched",
-              "op": "eq",
-              "value": false
+              "text": "Você volta à praça."
             }
           ]
         }
       ]
     },
-    "Capela abandonada": {
-      "name": "Capela abandonada",
-      "description": "Uma capela esquecida guarda inscrições antigas, um altar rachado e vestígios de um guardião desaparecido.",
+    "Margem do Rio": {
+      "name": "Margem do Rio",
+      "description": "A correnteza passa sob a ponte. Marcas de barco e um arco baixo apontam para uma gruta.",
       "actions": [
         {
-          "id": "return_square",
-          "label": "Voltar à praça",
+          "id": "read_river_marks",
+          "label": "Registrar as marcas da correnteza",
           "time_cost": 10,
           "effects": [
             {
-              "op": "move",
-              "location": "Praça da vila"
+              "op": "set",
+              "field": "river_mark",
+              "value": true
             },
             {
               "op": "log",
-              "text": "Você retorna à praça da vila."
+              "text": "As marcas mostram que o barco entrou na gruta quando a água baixou."
+            }
+          ],
+          "when": [
+            {
+              "field": "river_mark",
+              "op": "eq",
+              "value": false
             }
           ]
         },
         {
-          "id": "read_inscriptions",
-          "label": "Ler as inscrições",
+          "id": "enter_grotto",
+          "label": "Entrar na Gruta da Lente",
           "time_cost": 15,
           "effects": [
             {
-              "op": "set",
-              "field": "chapel_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "chapel_clue",
-              "value": true
+              "op": "move",
+              "location": "Gruta da Lente"
             },
             {
               "op": "log",
-              "text": "As inscrições da capela contam que uma luz misteriosa guiava os viajantes e que o símbolo do guardião foi perdido."
-            },
-            {
-              "op": "log",
-              "text": "As inscrições revelam que a lente foi instalada para orientar viajantes durante a neblina. Um acidente antigo deu origem à lenda."
+              "text": "Você atravessa o arco de pedra até a gruta."
             }
           ],
           "when": [
             {
-              "field": "chapel_searched",
+              "field": "bridge_examined",
               "op": "eq",
-              "value": false
+              "value": true
+            },
+            {
+              "field": "mill_clue",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "river_mark",
+              "op": "eq",
+              "value": true
             }
           ]
         },
         {
-          "id": "investigate_chapel",
-          "label": "Investigar o altar",
+          "id": "river_to_square",
+          "label": "Subir de volta à praça",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Praça da Vila"
+            },
+            {
+              "op": "log",
+              "text": "Uma escada na margem leva de volta à praça."
+            }
+          ]
+        }
+      ]
+    },
+    "Gruta da Lente": {
+      "name": "Gruta da Lente",
+      "description": "Uma cavidade sob a ponte guarda uma estrutura de espelhos apontada para a lente retirada do moinho.",
+      "actions": [
+        {
+          "id": "align_lens",
+          "label": "Recolocar e alinhar a lente",
           "time_cost": 20,
           "effects": [
             {
               "op": "set",
-              "field": "chapel_searched",
-              "value": true
-            },
-            {
-              "op": "set",
-              "field": "chapel_clue",
+              "field": "mystery_solved",
               "value": true
             },
             {
               "op": "log",
-              "text": "Você encontra um diário escondido sob o altar. Ele relata o desaparecimento do antigo guardião da ponte e revela a origem do símbolo."
+              "text": "Com a lente alinhada às marcas da capela, a luz azul reaparece: era um sinal de navegação, não um fantasma."
             }
           ],
           "when": [
             {
-              "field": "chapel_searched",
+              "field": "lens_recovered",
               "op": "eq",
-              "value": false
+              "value": true
+            },
+            {
+              "field": "chapel_clue",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "field": "river_mark",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "grotto_to_river",
+          "label": "Voltar à margem",
+          "time_cost": 10,
+          "effects": [
+            {
+              "op": "move",
+              "location": "Margem do Rio"
+            },
+            {
+              "op": "log",
+              "text": "Você retorna à margem do rio."
             }
           ]
         }
